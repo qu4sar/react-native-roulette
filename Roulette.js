@@ -20,11 +20,8 @@ class Roulette extends Component {
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderRelease: (e, gesture) => {
-        console.log(gesture);
         const dx = gesture.dx > 0;
-
         const { enableUserRotate, handlerOfRotate } = this.props;
-
         if (enableUserRotate) {
           const { children } = this.props;
           const { activeItem } = this.state;
@@ -33,11 +30,11 @@ class Roulette extends Component {
           this.state._animatedValue.setValue(activeItem);
           Animated.timing(this.state._animatedValue, {
             toValue: nextItem,
+            useNativeDriver: true,
             easing: Easing.linear,
           }).start();
 
           const newActiveItem = nextItem > children.length ? 1 : nextItem;
-
           this.setState({ activeItem: newActiveItem, rotateRight: dx }, () =>
             handlerOfRotate(children[children.length - newActiveItem].props)
           );
