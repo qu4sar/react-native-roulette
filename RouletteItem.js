@@ -1,22 +1,26 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 class RouletteItem extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       coordX: props.radius,
-      coordY: props.radius
+      coordY: props.radius,
     };
   }
 
   getCoordinates({ width, height }) {
     const { radius, index, step, distance } = this.props;
 
-    const coordX = Math.round(radius / 2 + distance * Math.cos((index) * step) - width / 2);
-    const coordY = Math.round(radius / 2 + distance * Math.sin((index) * step) - height / 2);
+    const coordX = Math.round(
+      radius / 2 + distance * Math.cos(index * step) - width / 2
+    );
+    const coordY = Math.round(
+      radius / 2 + distance * Math.sin(index * step) - height / 2
+    );
 
     this.setState({ coordX, coordY });
   }
@@ -27,10 +31,19 @@ class RouletteItem extends Component {
 
     return (
       <View
-        style={{ position: 'absolute', left: coordX, top: coordY, transform: [{ rotate: `${-rouletteRotate}deg` }] }}
+        style={{
+          position: "absolute",
+          left: coordX,
+          top: coordY,
+          transform: [{ rotate: `${-rouletteRotate}deg` }],
+        }}
         onLayout={(event) => this.getCoordinates(event.nativeEvent.layout)}
       >
-        {item}
+        <TouchableOpacity
+          onPress={() => this.props.onItemPressed(this.props.index)}
+        >
+          {item}
+        </TouchableOpacity>
       </View>
     );
   }
@@ -42,7 +55,7 @@ RouletteItem.propTypes = {
   radius: PropTypes.number,
   distance: PropTypes.number,
   rouletteRotate: PropTypes.number,
-  item: PropTypes.element.isRequired
+  item: PropTypes.element.isRequired,
 };
 
 export default RouletteItem;
